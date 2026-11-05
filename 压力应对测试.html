@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>你崩溃时是哪只动物？</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%236B8F71'/%3E%3Cpath d='M20 40c0-9 5-16 12-16s12 7 12 16c0 5-3 8-6 8h-12c-3 0-6-3-6-8z' fill='%23F5EFE4'/%3E%3Cpath d='M32 16l3 8h-6z' fill='%23F5EFE4'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --pine:#2D4A3E;
+    --moss:#6B8F71;
+    --sand:#F5EFE4;
+    --sand-deep:#EAE0CE;
+    --coral:#E8795A;
+    --ink:#22301F;
+    --ink-soft:#5A6A55;
+    --card:#FDFAF3;
+    --radius:22px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(107,143,113,.16), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(232,121,90,.14), transparent 55%),
+      var(--sand);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px 16px;
+    line-height:1.6;
+  }
+  .app{
+    width:100%;
+    max-width:460px;
+    background:var(--card);
+    border:1px solid rgba(45,74,62,.08);
+    border-radius:28px;
+    box-shadow:0 20px 50px rgba(45,74,62,.10), 0 2px 8px rgba(45,74,62,.05);
+    padding:34px 26px 30px;
+    position:relative;
+    overflow:hidden;
+  }
+  .app::before{
+    content:"";
+    position:absolute;top:0;left:0;right:0;height:5px;
+    background:linear-gradient(90deg,var(--coral),var(--moss) 55%,var(--pine));
+    opacity:.85;
+  }
+  section{animation:fadeIn .35s ease}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  [hidden]{display:none !important}
+
+  .cover{text-align:center;padding-top:10px}
+  .cover .mark{
+    width:118px;height:118px;margin:6px auto 22px;border-radius:50%;
+    background:linear-gradient(145deg,#8FB08F,var(--moss));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 12px 26px rgba(107,143,113,.32);
+  }
+  .cover .mark svg{width:58px;height:58px}
+  .cover h1{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:34px;font-weight:700;letter-spacing:2px;color:var(--pine);
+  }
+  .cover .sub{
+    margin-top:10px;color:var(--ink-soft);font-size:15px;letter-spacing:1px;
+  }
+  .cover .meta{
+    margin:26px auto 0;display:inline-flex;gap:14px;
+    background:var(--sand);border-radius:999px;padding:9px 18px;
+    font-size:13px;color:var(--ink-soft);
+  }
+  .meta span{display:inline-flex;align-items:center;gap:5px}
+  .btn{
+    display:block;width:100%;border:none;cursor:pointer;
+    font-size:17px;font-weight:600;letter-spacing:2px;
+    padding:15px 0;border-radius:999px;transition:transform .15s,box-shadow .15s;
+  }
+  .btn-primary{background:var(--pine);color:#FDFAF3;box-shadow:0 10px 22px rgba(45,74,62,.25)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(45,74,62,.32)}
+  .btn-primary:active{transform:translateY(0)}
+  .btn-ghost{
+    background:transparent;color:var(--ink-soft);border:1px solid var(--sand-deep);
+    font-size:15px;letter-spacing:1px;margin-top:14px;
+  }
+  .cover .start{margin-top:34px}
+  .cover .note{margin-top:16px;font-size:12px;color:var(--ink-soft);opacity:.8}
+
+  .quiz-head{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+  .q-count{font-size:13px;color:var(--ink-soft);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .q-count b{color:var(--coral);font-size:16px}
+  .bar{flex:1;height:8px;background:var(--sand-deep);border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--coral),var(--coral));transition:width .35s ease}
+  .quiz h2{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:23px;font-weight:700;line-height:1.5;color:var(--pine);
+    margin-bottom:24px;min-height:66px;
+  }
+  .opts{display:flex;flex-direction:column;gap:12px}
+  .opt{
+    text-align:left;width:100%;border:1.5px solid var(--sand-deep);background:#fff;
+    border-radius:16px;padding:14px 18px;font-size:15.5px;color:var(--ink);
+    cursor:pointer;transition:border-color .15s,background .15s,transform .1s;
+    font-family:inherit;line-height:1.5;
+  }
+  .opt:hover{border-color:var(--moss);transform:translateX(2px)}
+  .opt:active{transform:scale(.985)}
+  .opt.sel{border-color:var(--coral);background:#FDF1EC;font-weight:600;color:#B5523A}
+  .quiz .next{margin-top:26px}
+
+  .result{text-align:center;padding-top:8px}
+  .result .label{
+    display:inline-block;font-size:13px;letter-spacing:3px;color:var(--ink-soft);
+    background:var(--sand);border-radius:999px;padding:7px 18px;margin-bottom:20px;
+  }
+  .result .pic{
+    width:190px;height:190px;border-radius:50%;object-fit:cover;
+    border:5px solid #fff;box-shadow:0 14px 34px rgba(45,74,62,.22);
+    margin:4px auto 20px;display:block;opacity:1;
+    animation:pop .45s .08s both;
+  }
+  @keyframes pop{from{transform:scale(.88)}to{transform:none}}
+  .result .def{
+    display:inline-block;font-size:15px;letter-spacing:2px;font-weight:600;
+    color:#B5523A;background:#FDF1EC;border-radius:999px;padding:6px 18px;margin-bottom:14px;
+  }
+  .result h2{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:30px;color:var(--pine);letter-spacing:4px;margin-bottom:14px;
+  }
+  .tags{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+  .tags span{
+    font-size:13px;color:var(--pine);background:#EDF2EA;border:1px solid #D8E4D3;
+    border-radius:999px;padding:5px 14px;letter-spacing:1px;
+  }
+  .result .desc{
+    font-size:15px;color:var(--ink);line-height:1.9;text-align:left;
+    background:var(--sand);border-radius:18px;padding:18px 20px;margin-bottom:16px;
+  }
+  .result .quote{
+    font-size:14px;color:var(--coral);font-style:normal;font-weight:600;
+    background:#FDF1EC;border-radius:14px;padding:13px 16px;margin-bottom:24px;line-height:1.7;
+  }
+  .result .share{
+    font-size:12.5px;color:var(--ink-soft);margin-top:14px;letter-spacing:1px;
+  }
+  .result .share b{color:var(--moss);font-weight:600}
+
+  @media (max-width:380px){
+    .app{padding:28px 18px 24px}
+    .cover h1{font-size:29px}
+    .quiz h2{font-size:20px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none !important;transition:none !important}
+  }
+</style>
+</head>
+<body>
+<main class="app">
+
+  <!-- ===== 视图：封面 ===== -->
+  <section id="view-cover" class="cover">
+    <div class="mark" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none">
+        <path d="M20 40c0-9 5-16 12-16s12 7 12 16c0 5-3 8-6 8H26c-3 0-6-3-6-8z" fill="#F5EFE4"/>
+        <path d="M28 22h8v6h-8z" fill="#F5EFE4"/>
+        <path d="M30 24c0-3 2-5 2-5s2 2 2 5" stroke="#E8795A" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h1>你崩溃时是哪只<br>动物？</h1>
+    <p class="sub">8 个问题，测出你的压力自救方式</p>
+    <div class="meta">
+      <span>约 2 分钟</span>
+      <span>·</span>
+      <span>6 种压力人格</span>
+    </div>
+    <button class="btn btn-primary start" id="btn-start">开始测试</button>
+    <p class="note">结果仅供娱乐，压力大的时候记得照顾好自己</p>
+  </section>
+
+  <!-- ===== 视图：答题 ===== -->
+  <section id="view-quiz" class="quiz" hidden>
+    <div class="quiz-head">
+      <span class="q-count"><b id="q-cur">1</b> / <span id="q-total">8</span></span>
+      <div class="bar"><i id="q-bar"></i></div>
+    </div>
+    <h2 id="q-text"></h2>
+    <div class="opts" id="q-opts"></div>
+    <button class="btn btn-primary next" id="btn-next" hidden>下一题</button>
+  </section>
+
+  <!-- ===== 视图：结果 ===== -->
+  <section id="view-result" class="result" hidden>
+    <span class="label">你的崩溃自救法是</span>
+    <img class="pic" data-a="wolf" src="assets/animal-wolf.jpg" alt="狼人格形象" hidden>
+    <img class="pic" data-a="fox" src="assets/animal-fox.jpg" alt="狐狸人格形象" hidden>
+    <img class="pic" data-a="cat" src="assets/animal-cat.jpg" alt="猫人格形象" hidden>
+    <img class="pic" data-a="deer" src="assets/animal-deer.jpg" alt="鹿人格形象" hidden>
+    <img class="pic" data-a="lion" src="assets/animal-lion.jpg" alt="狮子人格形象" hidden>
+    <img class="pic" data-a="dolphin" src="assets/animal-dolphin.jpg" alt="海豚人格形象" hidden>
+    <span class="def" id="r-def"></span>
+    <h2 id="r-name"></h2>
+    <div class="tags" id="r-tags"></div>
+    <p class="desc" id="r-desc"></p>
+    <p class="quote" id="r-quote"></p>
+    <button class="btn btn-primary" id="btn-retry">再测一次</button>
+    <p class="share">截图你的压力人格，发给那个懂你的人看看？<br><b>长按图片可保存</b></p>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  var QUESTIONS = [
+    { q:"压力大的时候，你最先想？", opts:[
+      { t:"找人说说", a:"dolphin" },
+      { t:"自己静静", a:"wolf" },
+      { t:"睡一觉再说", a:"cat" },
+      { t:"列个清单，把问题解决掉", a:"lion" }
+    ]},
+    { q:"崩溃边缘，你会做什么？", opts:[
+      { t:"吃顿好的或买点东西", a:"fox" },
+      { t:"出去走走或运动", a:"deer" },
+      { t:"打游戏或刷视频放空", a:"cat" },
+      { t:"直接找当事人摊牌", a:"lion" }
+    ]},
+    { q:"你消化情绪的方式是？", opts:[
+      { t:"写进备忘录，自己消化", a:"wolf" },
+      { t:"讲给朋友听", a:"dolphin" },
+      { t:"做家务或整理房间", a:"deer" },
+      { t:"大笑一场，看喜剧", a:"fox" }
+    ]},
+    { q:"朋友安慰你的时候？", opts:[
+      { t:"听不进去，只想自己待着", a:"wolf" },
+      { t:"会被安慰到，谢谢有你", a:"dolphin" },
+      { t:"边听边想怎么解决", a:"lion" },
+      { t:"转移话题聊点开心的", a:"fox" }
+    ]},
+    { q:"加班加到崩溃，你会？", opts:[
+      { t:"硬撑到做完为止", a:"wolf" },
+      { t:"停下来歇口气再继续", a:"cat" },
+      { t:"找同事吐槽一起扛", a:"dolphin" },
+      { t:"直接找领导谈工作量", a:"lion" }
+    ]},
+    { q:"你崩溃时最怕？", opts:[
+      { t:"别人看出我状态不对", a:"wolf" },
+      { t:"一个人待着没人陪", a:"dolphin" },
+      { t:"被逼着马上做决定", a:"deer" },
+      { t:"情绪失控的样子", a:"cat" }
+    ]},
+    { q:"重新振作靠什么？", opts:[
+      { t:"时间，过阵子就好了", a:"cat" },
+      { t:"一次深度对话", a:"deer" },
+      { t:"一场胜利，把事办成", a:"lion" },
+      { t:"好朋友拉我出去嗨", a:"dolphin" }
+    ]},
+    { q:"你崩溃的样子，别人看到是？", opts:[
+      { t:"看不出，跟没事人一样", a:"wolf" },
+      { t:"有点丧，说话变少", a:"deer" },
+      { t:"还在开玩笑，但有点用力", a:"fox" },
+      { t:"明显烦躁，别惹我", a:"lion" }
+    ]}
+  ];
+
+  var ANIMALS = {
+    wolf: {
+      name:"狼", def:"硬扛型", tags:["坚韧","隐忍","不动声色"],
+      desc:"你是「硬扛型」。天大的事你也面不改色，一个人消化到天亮。你从不轻易示弱，也讨厌别人看穿你的狼狈。但硬扛久了会累，偶尔把担子分一点出去，天不会塌。",
+      quote:"会哭的孩子有糖吃，硬扛的你值得被心疼。"
+    },
+    fox: {
+      name:"狐狸", def:"自愈型", tags:["机智","会哄自己","转移注意"],
+      desc:"你是「自愈型」。崩溃的瞬间你会先把自己哄好——吃顿好的、刷点好玩的、转移注意力。别人以为你没心没肺，其实你只是懂得：情绪这关，先把自己哄过去再说。",
+      quote:"会哄自己开心，是成年人的超能力。"
+    },
+    cat: {
+      name:"猫", def:"充电型", tags:["放松","修复","拒绝硬撑"],
+      desc:"你是「充电型」。压力一来你就想躺平，睡一觉、发发呆、什么也不干。你从不硬撑，因为你清楚：状态不好时硬干，只会更糟。你的恢复方式是先把自己充满电。",
+      quote:"允许自己停一停，是为了走得更远。"
+    },
+    deer: {
+      name:"鹿", def:"温和型", tags:["觉察","整理","慢慢来"],
+      desc:"你是「温和型」。崩溃时你会先让自己离开现场，散步、整理、慢慢消化。你不激烈，但你的情绪从来不会积压太久，因为你懂得和自己对话。你的自愈是润物细无声的。",
+      quote:"慢慢来，你比想象中更能自愈。"
+    },
+    lion: {
+      name:"狮子", def:"战斗型", tags:["果断","行动力","越挫越勇"],
+      desc:"你是「战斗型」。越崩溃你越要正面刚，当场解决、当场翻篇。你不接受「先放一放」，因为拖着你更难受。你的崩溃来得快去得也快，一场硬仗打完，你就原地满血复活。",
+      quote:"你的崩溃，从来撑不过一场胜利。"
+    },
+    dolphin: {
+      name:"海豚", def:"倾诉型", tags:["表达","连接","不憋着"],
+      desc:"你是「宣泄型」。扛不住的时候你一定会说出来，找人聊、找人陪、把情绪倒干净。你从不藏着掖着，因为你知道说出来就轻了一半。你的修复力，来自身边有人。",
+      quote:"说出来，是你对自己最大的温柔。"
+    }
+  };
+
+  var $ = function(id){ return document.getElementById(id); };
+  var views = { cover:$("view-cover"), quiz:$("view-quiz"), result:$("view-result") };
+  function show(v){
+    Object.keys(views).forEach(function(k){ views[k].hidden = (k !== v); });
+  }
+
+  var cur = 0, scores = {}, selected = null;
+  function reset(){
+    cur = 0; selected = null; scores = {};
+    ["wolf","fox","cat","deer","lion","dolphin"].forEach(function(a){ scores[a] = 0; });
+  }
+  function renderQuestion(){
+    var item = QUESTIONS[cur];
+    $("q-cur").textContent = cur + 1;
+    $("q-total").textContent = QUESTIONS.length;
+    $("q-bar").style.width = (cur / QUESTIONS.length * 100) + "%";
+    $("q-text").textContent = item.q;
+    var box = $("q-opts");
+    box.innerHTML = "";
+    selected = null;
+    $("btn-next").hidden = true;
+    item.opts.forEach(function(o, i){
+      var b = document.createElement("button");
+      b.className = "opt";
+      b.textContent = o.t;
+      b.addEventListener("click", function(){
+        scores[o.a] += 1;
+        selected = o.a;
+        var all = box.children;
+        for (var j = 0; j < all.length; j++){ all[j].classList.remove("sel"); }
+        b.classList.add("sel");
+        $("btn-next").hidden = false;
+      });
+      box.appendChild(b);
+    });
+  }
+  function next(){
+    if (selected === null) return;
+    cur += 1;
+    if (cur < QUESTIONS.length){
+      renderQuestion();
+    } else {
+      var win = "wolf", best = -1;
+      Object.keys(scores).forEach(function(a){
+        if (scores[a] > best){ best = scores[a]; win = a; }
+      });
+      showResult(win);
+    }
+  }
+  function showResult(animalId){
+    var a = ANIMALS[animalId];
+    var pics = document.querySelectorAll(".result .pic");
+    for (var p = 0; p < pics.length; p++){
+      pics[p].hidden = (pics[p].getAttribute("data-a") !== animalId);
+    }
+    $("r-def").textContent = a.def;
+    $("r-name").textContent = a.name;
+    var tags = $("r-tags");
+    tags.innerHTML = "";
+    a.tags.forEach(function(t){
+      var s = document.createElement("span");
+      s.textContent = t;
+      tags.appendChild(s);
+    });
+    $("r-desc").textContent = a.desc;
+    $("r-quote").textContent = "「 " + a.quote + " 」";
+    show("result");
+  }
+
+  $("btn-start").addEventListener("click", function(){
+    reset();
+    renderQuestion();
+    show("quiz");
+  });
+  $("btn-next").addEventListener("click", next);
+  $("btn-retry").addEventListener("click", function(){
+    reset();
+    renderQuestion();
+    show("quiz");
+  });
+})();
+</script>
+</body>
+</html>
