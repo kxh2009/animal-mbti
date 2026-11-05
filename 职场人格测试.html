@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>你在职场里是哪只动物？</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%236B8F71'/%3E%3Cpath d='M20 40c0-9 5-16 12-16s12 7 12 16c0 5-3 8-6 8h-12c-3 0-6-3-6-8z' fill='%23F5EFE4'/%3E%3Cpath d='M32 16l3 8h-6z' fill='%23F5EFE4'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --pine:#2D4A3E;      /* 深林绿 主色 */
+    --moss:#6B8F71;      /* 苔藓绿 */
+    --sand:#F5EFE4;      /* 暖沙 背景 */
+    --sand-deep:#EAE0CE; /* 暖沙深 */
+    --coral:#E8795A;     /* 珊瑚橙 强调 */
+    --ink:#22301F;       /* 墨绿 正文 */
+    --ink-soft:#5A6A55;  /* 次级文字 */
+    --card:#FDFAF3;      /* 卡片 */
+    --radius:22px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(107,143,113,.16), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(232,121,90,.14), transparent 55%),
+      var(--sand);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px 16px;
+    line-height:1.6;
+  }
+  .app{
+    width:100%;
+    max-width:460px;
+    background:var(--card);
+    border:1px solid rgba(45,74,62,.08);
+    border-radius:28px;
+    box-shadow:0 20px 50px rgba(45,74,62,.10), 0 2px 8px rgba(45,74,62,.05);
+    padding:34px 26px 30px;
+    position:relative;
+    overflow:hidden;
+  }
+  .app::before{
+    content:"";
+    position:absolute;top:0;left:0;right:0;height:5px;
+    background:linear-gradient(90deg,var(--coral),var(--moss) 55%,var(--pine));
+    opacity:.85;
+  }
+  section{animation:fadeIn .35s ease}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  [hidden]{display:none !important}
+
+  /* ===== 封面 ===== */
+  .cover{text-align:center;padding-top:10px}
+  .cover .mark{
+    width:118px;height:118px;margin:6px auto 22px;border-radius:50%;
+    background:linear-gradient(145deg,#8FB08F,var(--moss));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 12px 26px rgba(107,143,113,.32);
+  }
+  .cover .mark svg{width:58px;height:58px}
+  .cover h1{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:34px;font-weight:700;letter-spacing:2px;color:var(--pine);
+  }
+  .cover .sub{
+    margin-top:10px;color:var(--ink-soft);font-size:15px;letter-spacing:1px;
+  }
+  .cover .meta{
+    margin:26px auto 0;display:inline-flex;gap:14px;
+    background:var(--sand);border-radius:999px;padding:9px 18px;
+    font-size:13px;color:var(--ink-soft);
+  }
+  .meta span{display:inline-flex;align-items:center;gap:5px}
+  .btn{
+    display:block;width:100%;border:none;cursor:pointer;
+    font-size:17px;font-weight:600;letter-spacing:2px;
+    padding:15px 0;border-radius:999px;transition:transform .15s,box-shadow .15s;
+  }
+  .btn-primary{background:var(--pine);color:#FDFAF3;box-shadow:0 10px 22px rgba(45,74,62,.25)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(45,74,62,.32)}
+  .btn-primary:active{transform:translateY(0)}
+  .btn-ghost{
+    background:transparent;color:var(--ink-soft);border:1px solid var(--sand-deep);
+    font-size:15px;letter-spacing:1px;margin-top:14px;
+  }
+  .cover .start{margin-top:34px}
+  .cover .note{margin-top:16px;font-size:12px;color:var(--ink-soft);opacity:.8}
+
+  /* ===== 答题 ===== */
+  .quiz-head{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+  .q-count{font-size:13px;color:var(--ink-soft);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .q-count b{color:var(--coral);font-size:16px}
+  .bar{flex:1;height:8px;background:var(--sand-deep);border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--coral),var(--coral));transition:width .35s ease}
+  .quiz h2{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:23px;font-weight:700;line-height:1.5;color:var(--pine);
+    margin-bottom:24px;min-height:66px;
+  }
+  .opts{display:flex;flex-direction:column;gap:12px}
+  .opt{
+    text-align:left;width:100%;border:1.5px solid var(--sand-deep);background:#fff;
+    border-radius:16px;padding:14px 18px;font-size:15.5px;color:var(--ink);
+    cursor:pointer;transition:border-color .15s,background .15s,transform .1s;
+    font-family:inherit;line-height:1.5;
+  }
+  .opt:hover{border-color:var(--moss);transform:translateX(2px)}
+  .opt:active{transform:scale(.985)}
+  .opt.sel{border-color:var(--coral);background:#FDF1EC;font-weight:600;color:#B5523A}
+  .quiz .next{margin-top:26px}
+
+  /* ===== 结果 ===== */
+  .result{text-align:center;padding-top:8px}
+  .result .label{
+    display:inline-block;font-size:13px;letter-spacing:3px;color:var(--ink-soft);
+    background:var(--sand);border-radius:999px;padding:7px 18px;margin-bottom:20px;
+  }
+  .result .pic{
+    width:190px;height:190px;border-radius:50%;object-fit:cover;
+    border:5px solid #fff;box-shadow:0 14px 34px rgba(45,74,62,.22);
+    margin:4px auto 20px;display:block;opacity:1;
+    animation:pop .45s .08s both;
+  }
+  @keyframes pop{from{transform:scale(.88)}to{transform:none}}
+  .result .def{
+    display:inline-block;font-size:15px;letter-spacing:2px;font-weight:600;
+    color:#B5523A;background:#FDF1EC;border-radius:999px;padding:6px 18px;margin-bottom:14px;
+  }
+  .result h2{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:30px;color:var(--pine);letter-spacing:4px;margin-bottom:14px;
+  }
+  .tags{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+  .tags span{
+    font-size:13px;color:var(--pine);background:#EDF2EA;border:1px solid #D8E4D3;
+    border-radius:999px;padding:5px 14px;letter-spacing:1px;
+  }
+  .result .desc{
+    font-size:15px;color:var(--ink);line-height:1.9;text-align:left;
+    background:var(--sand);border-radius:18px;padding:18px 20px;margin-bottom:16px;
+  }
+  .result .quote{
+    font-size:14px;color:var(--coral);font-style:normal;font-weight:600;
+    background:#FDF1EC;border-radius:14px;padding:13px 16px;margin-bottom:24px;line-height:1.7;
+  }
+  .result .share{
+    font-size:12.5px;color:var(--ink-soft);margin-top:14px;letter-spacing:1px;
+  }
+  .result .share b{color:var(--moss);font-weight:600}
+
+  @media (max-width:380px){
+    .app{padding:28px 18px 24px}
+    .cover h1{font-size:29px}
+    .quiz h2{font-size:20px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none !important;transition:none !important}
+  }
+</style>
+</head>
+<body>
+<main class="app">
+
+  <!-- ===== 视图：封面 ===== -->
+  <section id="view-cover" class="cover">
+    <div class="mark" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none">
+        <path d="M20 40c0-9 5-16 12-16s12 7 12 16c0 5-3 8-6 8H26c-3 0-6-3-6-8z" fill="#F5EFE4"/>
+        <path d="M28 22h8v6h-8z" fill="#F5EFE4"/>
+        <path d="M30 24c0-3 2-5 2-5s2 2 2 5" stroke="#E8795A" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h1>你在职场里<br>是哪只动物？</h1>
+    <p class="sub">8 个问题，测出你的职场人格</p>
+    <div class="meta">
+      <span>约 2 分钟</span>
+      <span>·</span>
+      <span>6 种职场人格</span>
+    </div>
+    <button class="btn btn-primary start" id="btn-start">开始测试</button>
+    <p class="note">结果仅供娱乐，认真你就输了</p>
+  </section>
+
+  <!-- ===== 视图：答题 ===== -->
+  <section id="view-quiz" class="quiz" hidden>
+    <div class="quiz-head">
+      <span class="q-count"><b id="q-cur">1</b> / <span id="q-total">8</span></span>
+      <div class="bar"><i id="q-bar"></i></div>
+    </div>
+    <h2 id="q-text"></h2>
+    <div class="opts" id="q-opts"></div>
+    <button class="btn btn-primary next" id="btn-next" hidden>下一题</button>
+  </section>
+
+  <!-- ===== 视图：结果 ===== -->
+  <section id="view-result" class="result" hidden>
+    <span class="label">你的职场人格是</span>
+    <img class="pic" data-a="wolf" src="assets/animal-wolf.jpg" alt="狼人格形象" hidden>
+    <img class="pic" data-a="fox" src="assets/animal-fox.jpg" alt="狐狸人格形象" hidden>
+    <img class="pic" data-a="cat" src="assets/animal-cat.jpg" alt="猫人格形象" hidden>
+    <img class="pic" data-a="deer" src="assets/animal-deer.jpg" alt="鹿人格形象" hidden>
+    <img class="pic" data-a="lion" src="assets/animal-lion.jpg" alt="狮子人格形象" hidden>
+    <img class="pic" data-a="dolphin" src="assets/animal-dolphin.jpg" alt="海豚人格形象" hidden>
+    <span class="def" id="r-def"></span>
+    <h2 id="r-name"></h2>
+    <div class="tags" id="r-tags"></div>
+    <p class="desc" id="r-desc"></p>
+    <p class="quote" id="r-quote"></p>
+    <button class="btn btn-primary" id="btn-retry">再测一次</button>
+    <p class="share">截图你的职场人格，看看同事和你想的一样吗？<br><b>长按图片可保存</b></p>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+  /* ===== 题目数据：8 题 × 4 选项，选项映射职场人格 ===== */
+  var QUESTIONS = [
+    { q:"周一早会，你最想？", opts:[
+      { t:"直奔主题，讲重点",     a:"lion" },
+      { t:"先观察大家的状态",     a:"wolf" },
+      { t:"安静听着，不主动发言", a:"cat" },
+      { t:"活跃气氛，带动节奏",   a:"dolphin" }
+    ]},
+    { q:"接到一个没人想碰的难项目，你？", opts:[
+      { t:"接下它，正好证明自己", a:"lion" },
+      { t:"评估利弊，想清楚再上", a:"fox" },
+      { t:"能推就推，别影响生活", a:"cat" },
+      { t:"拉上团队一起搞定",     a:"deer" }
+    ]},
+    { q:"和同事意见不合，你通常？", opts:[
+      { t:"摆事实讲道理，不退让", a:"lion" },
+      { t:"换个说法，曲线说服",   a:"fox" },
+      { t:"懒得争，各做各的",     a:"cat" },
+      { t:"先听对方，找共同点",   a:"deer" }
+    ]},
+    { q:"你工作的动力来源是？", opts:[
+      { t:"成就感和挑战",         a:"wolf" },
+      { t:"升职加薪和认可",       a:"fox" },
+      { t:"工作只是生活的一部分", a:"cat" },
+      { t:"和喜欢的人一起做事",   a:"dolphin" }
+    ]},
+    { q:"被领导当众批评，你会？", opts:[
+      { t:"当场反驳，维护立场",   a:"lion" },
+      { t:"先认错，私下再沟通",   a:"fox" },
+      { t:"表面平静，内心吐槽",   a:"cat" },
+      { t:"消化一下，找人倾诉",   a:"dolphin" }
+    ]},
+    { q:"团队需要加班赶工，你？", opts:[
+      { t:"带头冲，最后一个走",   a:"lion" },
+      { t:"规划效率，想办法少加班", a:"wolf" },
+      { t:"到点就走，生活优先",   a:"cat" },
+      { t:"留下来陪大家，给大家打气", a:"dolphin" }
+    ]},
+    { q:"你最欣赏的同事类型是？", opts:[
+      { t:"专业过硬，独当一面",   a:"wolf" },
+      { t:"情商高，会来事",       a:"fox" },
+      { t:"靠谱守时，不添乱",     a:"deer" },
+      { t:"开朗幽默，气氛担当",   a:"dolphin" }
+    ]},
+    { q:"五年后你想成为？", opts:[
+      { t:"带团队的管理者",       a:"lion" },
+      { t:"高收入的资源整合者",   a:"fox" },
+      { t:"自由职业，自己掌控节奏", a:"cat" },
+      { t:"稳定资深，受信任的老员工", a:"deer" }
+    ]}
+  ];
+
+  /* ===== 职场人格数据 ===== */
+  var ANIMALS = {
+    wolf: {
+      name:"狼", def:"独狼型选手", tags:["专业","独立","结果导向"],
+      desc:"你是团队里的「实力派」。你不爱无效社交，开会直奔重点，交给你的活儿总能干净利落搞定。你不抢功、不站队，用专业度赢得尊重。在职场，你就是那种「活儿干得漂亮，谁都不用攀关系」的人。",
+      quote:"你的能力，就是最好的职场名片。"
+    },
+    fox: {
+      name:"狐狸", def:"智囊型选手", tags:["机敏","高情商","会来事"],
+      desc:"你是职场里的「润滑剂+智囊」。你看得懂局势，也读得懂人心，知道什么时候该说、什么时候该藏。复杂的事到你手里总能找到第三条路。你在职场的上升靠的不是蛮力，而是分寸感。",
+      quote:"会来事不是心机，是让事情变顺的能力。"
+    },
+    cat: {
+      name:"猫", def:"边界感选手", tags:["清醒","效率","反内卷"],
+      desc:"你是职场里的「人间清醒」。你信奉「工作是手段，生活是目的」，拒绝无意义的内卷和表演式加班。你效率高、不惹事，到点下班毫不心虚。别人觉得你佛系，其实你只是把精力留给真正重要的事。",
+      quote:"你的边界感，是对自己时间最大的尊重。"
+    },
+    deer: {
+      name:"鹿", def:"团队粘合剂", tags:["温和","靠谱","协作力"],
+      desc:"你是团队里「离不开的那个人」。你不争不抢，但谁的事你都愿意搭把手，领导把任务交给你最放心。你擅长把一群人拧成一股绳，是大家心里默认的「定心丸」。职场上你的路，是稳扎稳打走出来的。",
+      quote:"靠谱，是你最值钱的能力。"
+    },
+    lion: {
+      name:"狮子", def:"领导者型", tags:["目标感","果决","有气场"],
+      desc:"你是天生的「领导者」。你目标感极强，遇事敢拍板，带着团队往前冲的时候自带气场。你不怕担责，反而觉得越大的挑战越来劲。在职场上，你注定不会甘于只做执行者。",
+      quote:"你的舞台，从来不只是工位那么大。"
+    },
+    dolphin: {
+      name:"海豚", def:"氛围组担当", tags:["热情","感染力","好人缘"],
+      desc:"你是办公室的「快乐源泉」。你走到哪，哪的茶水间就有笑声。你擅长破冰、会夸人、能张罗，团建没你冷场。你看着好像不怎么拼，但你的人缘本身就是职场里最值钱的无形资产。",
+      quote:"你的感染力，就是你的核心竞争力。"
+    }
+  };
+
+  /* ===== 视图切换 ===== */
+  var $ = function(id){ return document.getElementById(id); };
+  var views = { cover:$("view-cover"), quiz:$("view-quiz"), result:$("view-result") };
+  function show(v){
+    Object.keys(views).forEach(function(k){ views[k].hidden = (k !== v); });
+  }
+
+  /* ===== 答题逻辑 ===== */
+  var cur = 0, scores = {}, selected = null;
+  function reset(){
+    cur = 0; selected = null; scores = {};
+    ["wolf","fox","cat","deer","lion","dolphin"].forEach(function(a){ scores[a] = 0; });
+  }
+  function renderQuestion(){
+    var item = QUESTIONS[cur];
+    $("q-cur").textContent = cur + 1;
+    $("q-total").textContent = QUESTIONS.length;
+    $("q-bar").style.width = (cur / QUESTIONS.length * 100) + "%";
+    $("q-text").textContent = item.q;
+    var box = $("q-opts");
+    box.innerHTML = "";
+    selected = null;
+    $("btn-next").hidden = true;
+    item.opts.forEach(function(o, i){
+      var b = document.createElement("button");
+      b.className = "opt";
+      b.textContent = o.t;
+      b.addEventListener("click", function(){
+        scores[o.a] += 1;
+        selected = o.a;
+        var all = box.children;
+        for (var j = 0; j < all.length; j++){ all[j].classList.remove("sel"); }
+        b.classList.add("sel");
+        $("btn-next").hidden = false;
+      });
+      box.appendChild(b);
+    });
+  }
+  function next(){
+    if (selected === null) return;
+    cur += 1;
+    if (cur < QUESTIONS.length){
+      renderQuestion();
+    } else {
+      var win = "wolf", best = -1;
+      Object.keys(scores).forEach(function(a){
+        if (scores[a] > best){ best = scores[a]; win = a; }
+      });
+      showResult(win);
+    }
+  }
+  function showResult(animalId){
+    var a = ANIMALS[animalId];
+    var pics = document.querySelectorAll(".result .pic");
+    for (var p = 0; p < pics.length; p++){
+      pics[p].hidden = (pics[p].getAttribute("data-a") !== animalId);
+    }
+    $("r-def").textContent = a.def;
+    $("r-name").textContent = a.name;
+    var tags = $("r-tags");
+    tags.innerHTML = "";
+    a.tags.forEach(function(t){
+      var s = document.createElement("span");
+      s.textContent = t;
+      tags.appendChild(s);
+    });
+    $("r-desc").textContent = a.desc;
+    $("r-quote").textContent = "「 " + a.quote + " 」";
+    show("result");
+  }
+
+  /* ===== 事件绑定（无僵尸按钮） ===== */
+  $("btn-start").addEventListener("click", function(){
+    reset();
+    renderQuestion();
+    show("quiz");
+  });
+  $("btn-next").addEventListener("click", next);
+  $("btn-retry").addEventListener("click", function(){
+    reset();
+    renderQuestion();
+    show("quiz");
+  });
+})();
+</script>
+</body>
+</html>
