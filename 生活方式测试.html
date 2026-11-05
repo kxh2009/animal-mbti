@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>你的人生靠计划还是靠灵感？</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%236B8F71'/%3E%3Cpath d='M20 40c0-9 5-16 12-16s12 7 12 16c0 5-3 8-6 8h-12c-3 0-6-3-6-8z' fill='%23F5EFE4'/%3E%3Cpath d='M32 16l3 8h-6z' fill='%23F5EFE4'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --pine:#2D4A3E;
+    --moss:#6B8F71;
+    --sand:#F5EFE4;
+    --sand-deep:#EAE0CE;
+    --coral:#E8795A;
+    --ink:#22301F;
+    --ink-soft:#5A6A55;
+    --card:#FDFAF3;
+    --radius:22px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(107,143,113,.16), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(232,121,90,.14), transparent 55%),
+      var(--sand);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px 16px;
+    line-height:1.6;
+  }
+  .app{
+    width:100%;
+    max-width:460px;
+    background:var(--card);
+    border:1px solid rgba(45,74,62,.08);
+    border-radius:28px;
+    box-shadow:0 20px 50px rgba(45,74,62,.10), 0 2px 8px rgba(45,74,62,.05);
+    padding:34px 26px 30px;
+    position:relative;
+    overflow:hidden;
+  }
+  .app::before{
+    content:"";
+    position:absolute;top:0;left:0;right:0;height:5px;
+    background:linear-gradient(90deg,var(--coral),var(--moss) 55%,var(--pine));
+    opacity:.85;
+  }
+  section{animation:fadeIn .35s ease}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  [hidden]{display:none !important}
+  .cover{text-align:center;padding-top:10px}
+  .cover .mark{
+    width:118px;height:118px;margin:6px auto 22px;border-radius:50%;
+    background:linear-gradient(145deg,#8FB08F,var(--moss));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 12px 26px rgba(107,143,113,.32);
+  }
+  .cover .mark svg{width:58px;height:58px}
+  .cover h1{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:34px;font-weight:700;letter-spacing:2px;color:var(--pine);
+  }
+  .cover .sub{
+    margin-top:10px;color:var(--ink-soft);font-size:15px;letter-spacing:1px;
+  }
+  .cover .meta{
+    margin:26px auto 0;display:inline-flex;gap:14px;
+    background:var(--sand);border-radius:999px;padding:9px 18px;
+    font-size:13px;color:var(--ink-soft);
+  }
+  .meta span{display:inline-flex;align-items:center;gap:5px}
+  .btn{
+    display:block;width:100%;border:none;cursor:pointer;
+    font-size:17px;font-weight:600;letter-spacing:2px;
+    padding:15px 0;border-radius:999px;transition:transform .15s,box-shadow .15s;
+  }
+  .btn-primary{background:var(--pine);color:#FDFAF3;box-shadow:0 10px 22px rgba(45,74,62,.25)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(45,74,62,.32)}
+  .btn-primary:active{transform:translateY(0)}
+  .btn-ghost{
+    background:transparent;color:var(--ink-soft);border:1px solid var(--sand-deep);
+    font-size:15px;letter-spacing:1px;margin-top:14px;
+  }
+  .cover .start{margin-top:34px}
+  .cover .note{margin-top:16px;font-size:12px;color:var(--ink-soft);opacity:.8}
+  .quiz-head{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+  .q-count{font-size:13px;color:var(--ink-soft);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .q-count b{color:var(--coral);font-size:16px}
+  .bar{flex:1;height:8px;background:var(--sand-deep);border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--coral),var(--coral));transition:width .35s ease}
+  .quiz h2{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:23px;font-weight:700;line-height:1.5;color:var(--pine);
+    margin-bottom:24px;min-height:66px;
+  }
+  .opts{display:flex;flex-direction:column;gap:12px}
+  .opt{
+    text-align:left;width:100%;border:1.5px solid var(--sand-deep);background:#fff;
+    border-radius:16px;padding:14px 18px;font-size:15.5px;color:var(--ink);
+    cursor:pointer;transition:border-color .15s,background .15s,transform .1s;
+    font-family:inherit;line-height:1.5;
+  }
+  .opt:hover{border-color:var(--moss);transform:translateX(2px)}
+  .opt:active{transform:scale(.985)}
+  .opt.sel{border-color:var(--coral);background:#FDF1EC;font-weight:600;color:#B5523A}
+  .quiz .next{margin-top:26px}
+  .result{text-align:center;padding-top:8px}
+  .result .label{
+    display:inline-block;font-size:13px;letter-spacing:3px;color:var(--ink-soft);
+    background:var(--sand);border-radius:999px;padding:7px 18px;margin-bottom:20px;
+  }
+  .result .pic{
+    width:190px;height:190px;border-radius:50%;object-fit:cover;
+    border:5px solid #fff;box-shadow:0 14px 34px rgba(45,74,62,.22);
+    margin:4px auto 20px;display:block;opacity:1;
+    animation:pop .45s .08s both;
+  }
+  @keyframes pop{from{transform:scale(.88)}to{transform:none}}
+  .result .def{
+    display:inline-block;font-size:15px;letter-spacing:2px;font-weight:600;
+    color:#B5523A;background:#FDF1EC;border-radius:999px;padding:6px 18px;margin-bottom:14px;
+  }
+  .result h2{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:30px;color:var(--pine);letter-spacing:4px;margin-bottom:14px;
+  }
+  .tags{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+  .tags span{
+    font-size:13px;color:var(--pine);background:#EDF2EA;border:1px solid #D8E4D3;
+    border-radius:999px;padding:5px 14px;letter-spacing:1px;
+  }
+  .result .desc{
+    font-size:15px;color:var(--ink);line-height:1.9;text-align:left;
+    background:var(--sand);border-radius:18px;padding:18px 20px;margin-bottom:16px;
+  }
+  .result .quote{
+    font-size:14px;color:var(--coral);font-style:normal;font-weight:600;
+    background:#FDF1EC;border-radius:14px;padding:13px 16px;margin-bottom:24px;line-height:1.7;
+  }
+  .result .share{
+    font-size:12.5px;color:var(--ink-soft);margin-top:14px;letter-spacing:1px;
+  }
+  .result .share b{color:var(--moss);font-weight:600}
+  @media (max-width:380px){
+    .app{padding:28px 18px 24px}
+    .cover h1{font-size:29px}
+    .quiz h2{font-size:20px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none !important;transition:none !important}
+  }
+</style>
+</head>
+<body>
+<main class="app">
+
+  <!-- ===== 视图：封面 ===== -->
+  <section id="view-cover" class="cover">
+    <div class="mark" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none">
+        <path d="M20 40c0-9 5-16 12-16s12 7 12 16c0 5-3 8-6 8H26c-3 0-6-3-6-8z" fill="#F5EFE4"/>
+        <path d="M28 22h8v6h-8z" fill="#F5EFE4"/>
+        <path d="M30 24c0-3 2-5 2-5s2 2 2 5" stroke="#E8795A" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h1>你的人生靠计划<br>还是靠灵感？</h1>
+    <p class="sub">8 个问题，测出你的生活方式</p>
+    <div class="meta">
+      <span>约 2 分钟</span>
+      <span>·</span>
+      <span>6 种生活方式</span>
+    </div>
+    <button class="btn btn-primary start" id="btn-start">开始测试</button>
+    <p class="note">结果仅供娱乐，计划赶不上变化，开心就好</p>
+  </section>
+
+  <!-- ===== 视图：答题 ===== -->
+  <section id="view-quiz" class="quiz" hidden>
+    <div class="quiz-head">
+      <span class="q-count"><b id="q-cur">1</b> / <span id="q-total">8</span></span>
+      <div class="bar"><i id="q-bar"></i></div>
+    </div>
+    <h2 id="q-text"></h2>
+    <div class="opts" id="q-opts"></div>
+    <button class="btn btn-primary next" id="btn-next" hidden>下一题</button>
+  </section>
+
+  <!-- ===== 视图：结果 ===== -->
+  <section id="view-result" class="result" hidden>
+    <span class="label">你的生活方式是</span>
+    <img class="pic" data-a="wolf" src="assets/animal-wolf.jpg" alt="狼人格形象" hidden>
+    <img class="pic" data-a="fox" src="assets/animal-fox.jpg" alt="狐狸人格形象" hidden>
+    <img class="pic" data-a="cat" src="assets/animal-cat.jpg" alt="猫人格形象" hidden>
+    <img class="pic" data-a="deer" src="assets/animal-deer.jpg" alt="鹿人格形象" hidden>
+    <img class="pic" data-a="lion" src="assets/animal-lion.jpg" alt="狮子人格形象" hidden>
+    <img class="pic" data-a="dolphin" src="assets/animal-dolphin.jpg" alt="海豚人格形象" hidden>
+    <span class="def" id="r-def"></span>
+    <h2 id="r-name"></h2>
+    <div class="tags" id="r-tags"></div>
+    <p class="desc" id="r-desc"></p>
+    <p class="quote" id="r-quote"></p>
+    <button class="btn btn-primary" id="btn-retry">再测一次</button>
+    <p class="share">截图你的生活方式，看看你是哪种过生活的人？<br><b>长按图片可保存</b></p>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var QUESTIONS = [
+    { q:"周末早上醒来，你？", opts:[
+      { t:"心里已有安排，按计划进行", a:"wolf" },
+      { t:"看心情，想到什么做什么",   a:"cat" },
+      { t:"先列个待办清单再开始",     a:"deer" },
+      { t:"随缘，有什么好玩就玩什么", a:"dolphin" }
+    ]},
+    { q:"出门旅行前，你？", opts:[
+      { t:"做好攻略，路线酒店全订好", a:"wolf" },
+      { t:"定个大概方向，边走边玩",   a:"fox" },
+      { t:"不做攻略，到了再说",       a:"dolphin" },
+      { t:"只定目标和预算，其他灵活", a:"lion" }
+    ]},
+    { q:"面对一周的安排，你？", opts:[
+      { t:"排好计划表，按表执行",     a:"deer" },
+      { t:"只标记重要日子，其余随意", a:"fox" },
+      { t:"心里有数就行，不用写下来", a:"cat" },
+      { t:"抓住最重要的目标，其他顺其自然", a:"lion" }
+    ]},
+    { q:"计划突然被打乱，你？", opts:[
+      { t:"有点难受，但马上重排",     a:"deer" },
+      { t:"无所谓，正好随缘走走",     a:"dolphin" },
+      { t:"立刻调整，找到新最优解",   a:"fox" },
+      { t:"稳住核心目标，路径随便改", a:"lion" }
+    ]},
+    { q:"你的房间或桌面通常是？", opts:[
+      { t:"整洁有序，东西都有固定位置", a:"deer" },
+      { t:"乱中有序，自己找得到就行",   a:"cat" },
+      { t:"随用随放，但不影响我生活",   a:"dolphin" },
+      { t:"干净利落，简单就好",         a:"wolf" }
+    ]},
+    { q:"朋友临时约你，你？", opts:[
+      { t:"看日程表再决定",       a:"wolf" },
+      { t:"没什么安排就去",       a:"dolphin" },
+      { t:"权衡一下再去",         a:"fox" },
+      { t:"只要不影响目标就冲",   a:"lion" }
+    ]},
+    { q:"做一件重要的事，你？", opts:[
+      { t:"定好步骤，一步一步来",     a:"wolf" },
+      { t:"先做了再说，边做边调整",   a:"fox" },
+      { t:"凭感觉推进，感觉对就行",   a:"cat" },
+      { t:"先定目标，过程灵活",       a:"lion" }
+    ]},
+    { q:"一天结束时，你？", opts:[
+      { t:"复盘今天，计划明天",       a:"deer" },
+      { t:"回想今天好玩的事",         a:"dolphin" },
+      { t:"觉得今天过得挺随性",       a:"cat" },
+      { t:"确认目标进度，其他不重要", a:"lion" }
+    ]}
+  ];
+
+  var ANIMALS = {
+    wolf: {
+      name:"狼", def:"自律执行者", tags:["计划先行","说到做到","执行力强"],
+      desc:"你是「自律执行者」。你的人生靠计划：事情提前安排好，按部就班地执行。你答应的事一定做到，定下的目标一定完成。自律对你来说不是苦，而是安全感。",
+      quote:"你把日子过成了可以预测的爽文。"
+    },
+    fox: {
+      name:"狐狸", def:"灵活应变者", tags:["随机应变","边做边调","从不卡壳"],
+      desc:"你是「灵活应变者」。你的人生靠应变：计划可以随时改，路子可以随时换。变化对你不是麻烦，而是机会。别人还在纠结怎么办，你已经找到第二条路了。",
+      quote:"计划赶不上变化？你正好喜欢变化。"
+    },
+    cat: {
+      name:"猫", def:"随性自由派", tags:["看心情","不受约束","随遇而安"],
+      desc:"你是「随性自由派」。你的人生靠心情：想做什么就做什么，不想做天王老子来也没用。你不喜欢被计划和规则绑住，自由对你来说比什么都重要。",
+      quote:"你的人生剧本，自己现写现演。"
+    },
+    deer: {
+      name:"鹿", def:"秩序守护者", tags:["井井有条","细节控","讨厌混乱"],
+      desc:"你是「秩序守护者」。你的人生靠秩序：房间整洁、日程清楚、东西各就各位。你受不了混乱和拖延，把事情安排得明明白白，你才安心。",
+      quote:"你的生活，是一本写好的清单。"
+    },
+    lion: {
+      name:"狮子", def:"目标驱动者", tags:["目标导向","结果说话","抓住主线"],
+      desc:"你是「目标驱动者」。你的人生靠目标：认准一个目标，所有安排都围着它转。细节可以乱，路径可以换，但目标必须达成。你天生是那种眼里有光的人。",
+      quote:"你盯住目标的样子，像猎人盯着猎物。"
+    },
+    dolphin: {
+      name:"海豚", def:"灵感冒险家", tags:["说走就走","活在当下","惊喜制造机"],
+      desc:"你是「灵感冒险家」。你的人生靠灵感：想到什么就去做，说走就走。你不喜欢被安排得太死，因为惊喜和意外才是生活的调味剂。和你在一起，每天都有新花样。",
+      quote:"人生嘛，最重要的就是好玩。"
+    }
+  };
+
+  var $ = function(id){ return document.getElementById(id); };
+  var views = { cover:$("view-cover"), quiz:$("view-quiz"), result:$("view-result") };
+  function show(v){
+    Object.keys(views).forEach(function(k){ views[k].hidden = (k !== v); });
+  }
+
+  var cur = 0, scores = {}, selected = null;
+  function reset(){
+    cur = 0; selected = null; scores = {};
+    ["wolf","fox","cat","deer","lion","dolphin"].forEach(function(a){ scores[a] = 0; });
+  }
+  function renderQuestion(){
+    var item = QUESTIONS[cur];
+    $("q-cur").textContent = cur + 1;
+    $("q-total").textContent = QUESTIONS.length;
+    $("q-bar").style.width = (cur / QUESTIONS.length * 100) + "%";
+    $("q-text").textContent = item.q;
+    var box = $("q-opts");
+    box.innerHTML = "";
+    selected = null;
+    $("btn-next").hidden = true;
+    item.opts.forEach(function(o, i){
+      var b = document.createElement("button");
+      b.className = "opt";
+      b.textContent = o.t;
+      b.addEventListener("click", function(){
+        scores[o.a] += 1;
+        selected = o.a;
+        var all = box.children;
+        for (var j = 0; j < all.length; j++){ all[j].classList.remove("sel"); }
+        b.classList.add("sel");
+        $("btn-next").hidden = false;
+      });
+      box.appendChild(b);
+    });
+  }
+  function next(){
+    if (selected === null) return;
+    cur += 1;
+    if (cur < QUESTIONS.length){
+      renderQuestion();
+    } else {
+      var win = "wolf", best = -1;
+      Object.keys(scores).forEach(function(a){
+        if (scores[a] > best){ best = scores[a]; win = a; }
+      });
+      showResult(win);
+    }
+  }
+  function showResult(animalId){
+    var a = ANIMALS[animalId];
+    var pics = document.querySelectorAll(".result .pic");
+    for (var p = 0; p < pics.length; p++){
+      pics[p].hidden = (pics[p].getAttribute("data-a") !== animalId);
+    }
+    $("r-def").textContent = a.def;
+    $("r-name").textContent = a.name;
+    var tags = $("r-tags");
+    tags.innerHTML = "";
+    a.tags.forEach(function(t){
+      var s = document.createElement("span");
+      s.textContent = t;
+      tags.appendChild(s);
+    });
+    $("r-desc").textContent = a.desc;
+    $("r-quote").textContent = "「 " + a.quote + " 」";
+    show("result");
+  }
+
+  $("btn-start").addEventListener("click", function(){
+    reset();
+    renderQuestion();
+    show("quiz");
+  });
+  $("btn-next").addEventListener("click", next);
+  $("btn-retry").addEventListener("click", function(){
+    reset();
+    renderQuestion();
+    show("quiz");
+  });
+})();
+</script>
+</body>
+</html>
