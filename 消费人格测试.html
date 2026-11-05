@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>你花钱时是哪只动物？</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%236B8F71'/%3E%3Cpath d='M20 40c0-9 5-16 12-16s12 7 12 16c0 5-3 8-6 8h-12c-3 0-6-3-6-8z' fill='%23F5EFE4'/%3E%3Cpath d='M32 16l3 8h-6z' fill='%23F5EFE4'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --pine:#2D4A3E;      /* 深林绿 主色 */
+    --moss:#6B8F71;      /* 苔藓绿 */
+    --sand:#F5EFE4;      /* 暖沙 背景 */
+    --sand-deep:#EAE0CE; /* 暖沙深 */
+    --coral:#E8795A;     /* 珊瑚橙 强调 */
+    --ink:#22301F;       /* 墨绿 正文 */
+    --ink-soft:#5A6A55;  /* 次级文字 */
+    --card:#FDFAF3;      /* 卡片 */
+    --radius:22px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(107,143,113,.16), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(232,121,90,.14), transparent 55%),
+      var(--sand);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px 16px;
+    line-height:1.6;
+  }
+  .app{
+    width:100%;
+    max-width:460px;
+    background:var(--card);
+    border:1px solid rgba(45,74,62,.08);
+    border-radius:28px;
+    box-shadow:0 20px 50px rgba(45,74,62,.10), 0 2px 8px rgba(45,74,62,.05);
+    padding:34px 26px 30px;
+    position:relative;
+    overflow:hidden;
+  }
+  .app::before{
+    content:"";
+    position:absolute;top:0;left:0;right:0;height:5px;
+    background:linear-gradient(90deg,var(--coral),var(--moss) 55%,var(--pine));
+    opacity:.85;
+  }
+  section{animation:fadeIn .35s ease}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  [hidden]{display:none !important}
+
+  /* ===== 封面 ===== */
+  .cover{text-align:center;padding-top:10px}
+  .cover .mark{
+    width:118px;height:118px;margin:6px auto 22px;border-radius:50%;
+    background:linear-gradient(145deg,#8FB08F,var(--moss));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 12px 26px rgba(107,143,113,.32);
+  }
+  .cover .mark svg{width:58px;height:58px}
+  .cover h1{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:34px;font-weight:700;letter-spacing:2px;color:var(--pine);
+  }
+  .cover .sub{
+    margin-top:10px;color:var(--ink-soft);font-size:15px;letter-spacing:1px;
+  }
+  .cover .meta{
+    margin:26px auto 0;display:inline-flex;gap:14px;
+    background:var(--sand);border-radius:999px;padding:9px 18px;
+    font-size:13px;color:var(--ink-soft);
+  }
+  .meta span{display:inline-flex;align-items:center;gap:5px}
+  .btn{
+    display:block;width:100%;border:none;cursor:pointer;
+    font-size:17px;font-weight:600;letter-spacing:2px;
+    padding:15px 0;border-radius:999px;transition:transform .15s,box-shadow .15s;
+  }
+  .btn-primary{background:var(--pine);color:#FDFAF3;box-shadow:0 10px 22px rgba(45,74,62,.25)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(45,74,62,.32)}
+  .btn-primary:active{transform:translateY(0)}
+  .btn-ghost{
+    background:transparent;color:var(--ink-soft);border:1px solid var(--sand-deep);
+    font-size:15px;letter-spacing:1px;margin-top:14px;
+  }
+  .cover .start{margin-top:34px}
+  .cover .note{margin-top:16px;font-size:12px;color:var(--ink-soft);opacity:.8}
+
+  /* ===== 答题 ===== */
+  .quiz-head{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+  .q-count{font-size:13px;color:var(--ink-soft);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .q-count b{color:var(--coral);font-size:16px}
+  .bar{flex:1;height:8px;background:var(--sand-deep);border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--coral),var(--coral));transition:width .35s ease}
+  .quiz h2{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:23px;font-weight:700;line-height:1.5;color:var(--pine);
+    margin-bottom:24px;min-height:66px;
+  }
+  .opts{display:flex;flex-direction:column;gap:12px}
+  .opt{
+    text-align:left;width:100%;border:1.5px solid var(--sand-deep);background:#fff;
+    border-radius:16px;padding:14px 18px;font-size:15.5px;color:var(--ink);
+    cursor:pointer;transition:border-color .15s,background .15s,transform .1s;
+    font-family:inherit;line-height:1.5;
+  }
+  .opt:hover{border-color:var(--moss);transform:translateX(2px)}
+  .opt:active{transform:scale(.985)}
+  .opt.sel{border-color:var(--coral);background:#FDF1EC;font-weight:600;color:#B5523A}
+  .quiz .next{margin-top:26px}
+
+  /* ===== 结果 ===== */
+  .result{text-align:center;padding-top:8px}
+  .result .label{
+    display:inline-block;font-size:13px;letter-spacing:3px;color:var(--ink-soft);
+    background:var(--sand);border-radius:999px;padding:7px 18px;margin-bottom:20px;
+  }
+  .result .pic{
+    width:190px;height:190px;border-radius:50%;object-fit:cover;
+    border:5px solid #fff;box-shadow:0 14px 34px rgba(45,74,62,.22);
+    margin:4px auto 20px;display:block;opacity:1;
+    animation:pop .45s .08s both;
+  }
+  @keyframes pop{from{transform:scale(.88)}to{transform:none}}
+  .result .def{
+    display:inline-block;font-size:15px;letter-spacing:2px;font-weight:600;
+    color:#B5523A;background:#FDF1EC;border-radius:999px;padding:6px 18px;margin-bottom:14px;
+  }
+  .result h2{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:30px;color:var(--pine);letter-spacing:4px;margin-bottom:14px;
+  }
+  .tags{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+  .tags span{
+    font-size:13px;color:var(--pine);background:#EDF2EA;border:1px solid #D8E4D3;
+    border-radius:999px;padding:5px 14px;letter-spacing:1px;
+  }
+  .result .desc{
+    font-size:15px;color:var(--ink);line-height:1.9;text-align:left;
+    background:var(--sand);border-radius:18px;padding:18px 20px;margin-bottom:16px;
+  }
+  .result .quote{
+    font-size:14px;color:var(--coral);font-style:normal;font-weight:600;
+    background:#FDF1EC;border-radius:14px;padding:13px 16px;margin-bottom:24px;line-height:1.7;
+  }
+  .result .share{
+    font-size:12.5px;color:var(--ink-soft);margin-top:14px;letter-spacing:1px;
+  }
+  .result .share b{color:var(--moss);font-weight:600}
+
+  @media (max-width:380px){
+    .app{padding:28px 18px 24px}
+    .cover h1{font-size:29px}
+    .quiz h2{font-size:20px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none !important;transition:none !important}
+  }
+</style>
+</head>
+<body>
+<main class="app">
+
+  <!-- ===== 视图：封面 ===== -->
+  <section id="view-cover" class="cover">
+    <div class="mark" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none">
+        <path d="M20 40c0-9 5-16 12-16s12 7 12 16c0 5-3 8-6 8H26c-3 0-6-3-6-8z" fill="#F5EFE4"/>
+        <path d="M28 22h8v6h-8z" fill="#F5EFE4"/>
+        <path d="M30 24c0-3 2-5 2-5s2 2 2 5" stroke="#E8795A" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h1>你花钱时是哪只动物？</h1>
+    <p class="sub">8 个问题，测出你的消费人格</p>
+    <div class="meta">
+      <span>约 2 分钟</span>
+      <span>·</span>
+      <span>6 种消费人格</span>
+    </div>
+    <button class="btn btn-primary start" id="btn-start">开始测试</button>
+    <p class="note">结果仅供娱乐，理性消费，快乐花钱</p>
+  </section>
+
+  <!-- ===== 视图：答题 ===== -->
+  <section id="view-quiz" class="quiz" hidden>
+    <div class="quiz-head">
+      <span class="q-count"><b id="q-cur">1</b> / <span id="q-total">8</span></span>
+      <div class="bar"><i id="q-bar"></i></div>
+    </div>
+    <h2 id="q-text"></h2>
+    <div class="opts" id="q-opts"></div>
+    <button class="btn btn-primary next" id="btn-next" hidden>下一题</button>
+  </section>
+
+  <!-- ===== 视图：结果 ===== -->
+  <section id="view-result" class="result" hidden>
+    <span class="label">你的消费人格是</span>
+    <img class="pic" data-a="wolf" src="assets/animal-wolf.jpg" alt="狼人格形象" hidden>
+    <img class="pic" data-a="fox" src="assets/animal-fox.jpg" alt="狐狸人格形象" hidden>
+    <img class="pic" data-a="cat" src="assets/animal-cat.jpg" alt="猫人格形象" hidden>
+    <img class="pic" data-a="deer" src="assets/animal-deer.jpg" alt="鹿人格形象" hidden>
+    <img class="pic" data-a="lion" src="assets/animal-lion.jpg" alt="狮子人格形象" hidden>
+    <img class="pic" data-a="dolphin" src="assets/animal-dolphin.jpg" alt="海豚人格形象" hidden>
+    <span class="def" id="r-def"></span>
+    <h2 id="r-name"></h2>
+    <div class="tags" id="r-tags"></div>
+    <p class="desc" id="r-desc"></p>
+    <p class="quote" id="r-quote"></p>
+    <button class="btn btn-primary" id="btn-retry">再测一次</button>
+    <p class="share">截图你的消费人格，看看你和谁是一路人？<br><b>长按图片可保存</b></p>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+  /* ===== 题目数据：8 题 × 4 选项，选项映射消费人格 ===== */
+  var QUESTIONS = [
+    { q:"看到心仪的东西，你第一反应？", opts:[
+      { t:"先放进购物车，过几天再说", a:"cat" },
+      { t:"立刻比价，全网找最低价",   a:"fox" },
+      { t:"喜欢就买，等不了",         a:"cat" },
+      { t:"买！开心最重要",           a:"dolphin" }
+    ]},
+    { q:"月末看账单，你通常？", opts:[
+      { t:"心里有数，都在计划内",   a:"wolf" },
+      { t:"精打细算，还薅了不少羊毛", a:"fox" },
+      { t:"完了，怎么花了这么多",   a:"cat" },
+      { t:"钱花在刀刃上了，值",     a:"deer" }
+    ]},
+    { q:"请客吃饭，你会？", opts:[
+      { t:"抢着买单，不差这点",   a:"lion" },
+      { t:"看场合，该我请就请",   a:"deer" },
+      { t:"提议 AA，谁也不吃亏",  a:"fox" },
+      { t:"谁开心谁请，图个乐",   a:"dolphin" }
+    ]},
+    { q:"打折促销时，你？", opts:[
+      { t:"只买原本要买的",       a:"wolf" },
+      { t:"疯狂凑满减，不买感觉亏", a:"fox" },
+      { t:"冲动下单，事后有点后悔", a:"cat" },
+      { t:"囤一堆，用不用再说",   a:"dolphin" }
+    ]},
+    { q:"买贵的东西（手机、包），你？", opts:[
+      { t:"买能力范围内最好的",   a:"deer" },
+      { t:"挑性价比最高的",       a:"fox" },
+      { t:"能省则省，够用就行",   a:"wolf" },
+      { t:"牌子大的，有面子",     a:"lion" }
+    ]},
+    { q:"朋友找你拼单，你？", opts:[
+      { t:"可以，反正也划算",     a:"fox" },
+      { t:"不了，我只买需要的",   a:"wolf" },
+      { t:"好啊，一起买快乐加倍", a:"dolphin" },
+      { t:"我先看看，合适就拼",   a:"cat" }
+    ]},
+    { q:"你买东西更看重？", opts:[
+      { t:"质量和耐用",           a:"deer" },
+      { t:"价格和划算",           a:"wolf" },
+      { t:"喜欢和开心",           a:"dolphin" },
+      { t:"品牌和认可",           a:"lion" }
+    ]},
+    { q:"花冤枉钱之后，你？", opts:[
+      { t:"果断退货，不将就",     a:"lion" },
+      { t:"当交学费，下次注意",   a:"wolf" },
+      { t:"安慰自己：开心过就行", a:"cat" },
+      { t:"心疼，但很快就忘了",   a:"dolphin" }
+    ]}
+  ];
+
+  /* ===== 消费人格数据 ===== */
+  var ANIMALS = {
+    wolf: {
+      name:"狼", def:"理性买家", tags:["冷静","克制","只买刚需"],
+      desc:"你是「理性买家」。买东西先列清单，价格记心里，冲动消费在你身上几乎不存在。你花钱有自己的节奏，从不为促销套路动摇。朋友都说你会过日子，其实你是把每一分钱都花在刀刃上。",
+      quote:"你的克制，让你永远有底气。"
+    },
+    fox: {
+      name:"狐狸", def:"精明猎手", tags:["比价","薅羊毛","会算账"],
+      desc:"你是「精明猎手」。同样的东西你总能买到最低价，优惠券、满减、二手置换玩得明明白白。你花钱讲究值不值，也从不吃亏。别人买的是商品，你买的是划算。",
+      quote:"会省钱的快乐，买不到。"
+    },
+    cat: {
+      name:"猫", def:"心情消费者", tags:["随性","即时满足","买开心"],
+      desc:"你是「心情消费者」。开心了买，不开心也买，买东西是你最直接的快乐开关。你常说赚钱不就是为了花，但也常望着账单发呆。你的消费哲学：当下的开心也是价值。",
+      quote:"你买的不是东西，是那一刻的好心情。"
+    },
+    deer: {
+      name:"鹿", def:"品质党", tags:["讲究","耐用","宁缺毋滥"],
+      desc:"你是「品质党」。宁可少买，也要买好的。你买东西看质量、看耐用，一件好物能用很久。你的消费观带着一种从容：不跟风、不攀比，只为自己真正认可的东西买单。",
+      quote:"你买的每件东西，都经得起时间。"
+    },
+    lion: {
+      name:"狮子", def:"排场型", tags:["大方","要体面","有气势"],
+      desc:"你是「排场型消费者」。请客你抢着买单，送礼讲究体面，买东西喜欢挑牌子。你觉得钱要花得有气势。你的大方让你人缘好，但要小心：体面可以偶尔买单，别让账单替你撑面子。",
+      quote:"你的大方，是你最贵的社交名片。"
+    },
+    dolphin: {
+      name:"海豚", def:"快乐消费者", tags:["氛围","分享","为开心买单"],
+      desc:"你是「快乐消费者」。你爱囤爱买，更爱分享——买到好东西恨不得安利全世界。你的钱大多花在让自己和身边人开心上：美食、礼物、聚会。你花钱的样子，就是热爱生活的样子。",
+      quote:"你把钱花成了快乐的样子。"
+    }
+  };
+
+  /* ===== 视图切换 ===== */
+  var $ = function(id){ return document.getElementById(id); };
+  var views = { cover:$("view-cover"), quiz:$("view-quiz"), result:$("view-result") };
+  function show(v){
+    Object.keys(views).forEach(function(k){ views[k].hidden = (k !== v); });
+  }
+
+  /* ===== 答题逻辑 ===== */
+  var cur = 0, scores = {}, selected = null;
+  function reset(){
+    cur = 0; selected = null; scores = {};
+    ["wolf","fox","cat","deer","lion","dolphin"].forEach(function(a){ scores[a] = 0; });
+  }
+  function renderQuestion(){
+    var item = QUESTIONS[cur];
+    $("q-cur").textContent = cur + 1;
+    $("q-total").textContent = QUESTIONS.length;
+    $("q-bar").style.width = (cur / QUESTIONS.length * 100) + "%";
+    $("q-text").textContent = item.q;
+    var box = $("q-opts");
+    box.innerHTML = "";
+    selected = null;
+    $("btn-next").hidden = true;
+    item.opts.forEach(function(o, i){
+      var b = document.createElement("button");
+      b.className = "opt";
+      b.textContent = o.t;
+      b.addEventListener("click", function(){
+        scores[o.a] += 1;
+        selected = o.a;
+        var all = box.children;
+        for (var j = 0; j < all.length; j++){ all[j].classList.remove("sel"); }
+        b.classList.add("sel");
+        $("btn-next").hidden = false;
+      });
+      box.appendChild(b);
+    });
+  }
+  function next(){
+    if (selected === null) return;
+    cur += 1;
+    if (cur < QUESTIONS.length){
+      renderQuestion();
+    } else {
+      var win = "wolf", best = -1;
+      Object.keys(scores).forEach(function(a){
+        if (scores[a] > best){ best = scores[a]; win = a; }
+      });
+      showResult(win);
+    }
+  }
+  function showResult(animalId){
+    var a = ANIMALS[animalId];
+    var pics = document.querySelectorAll(".result .pic");
+    for (var p = 0; p < pics.length; p++){
+      pics[p].hidden = (pics[p].getAttribute("data-a") !== animalId);
+    }
+    $("r-def").textContent = a.def;
+    $("r-name").textContent = a.name;
+    var tags = $("r-tags");
+    tags.innerHTML = "";
+    a.tags.forEach(function(t){
+      var s = document.createElement("span");
+      s.textContent = t;
+      tags.appendChild(s);
+    });
+    $("r-desc").textContent = a.desc;
+    $("r-quote").textContent = "「 " + a.quote + " 」";
+    show("result");
+  }
+
+  /* ===== 事件绑定（无僵尸按钮） ===== */
+  $("btn-start").addEventListener("click", function(){
+    reset();
+    renderQuestion();
+    show("quiz");
+  });
+  $("btn-next").addEventListener("click", next);
+  $("btn-retry").addEventListener("click", function(){
+    reset();
+    renderQuestion();
+    show("quiz");
+  });
+})();
+</script>
+</body>
+</html>
