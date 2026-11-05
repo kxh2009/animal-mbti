@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>你看世界靠细节还是靠感觉？</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%236B8F71'/%3E%3Cpath d='M20 40c0-9 5-16 12-16s12 7 12 16c0 5-3 8-6 8h-12c-3 0-6-3-6-8z' fill='%23F5EFE4'/%3E%3Cpath d='M32 16l3 8h-6z' fill='%23F5EFE4'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --pine:#2D4A3E;      /* 深林绿 主色 */
+    --moss:#6B8F71;      /* 苔藓绿 */
+    --sand:#F5EFE4;      /* 暖沙 背景 */
+    --sand-deep:#EAE0CE; /* 暖沙深 */
+    --coral:#E8795A;     /* 珊瑚橙 强调 */
+    --ink:#22301F;       /* 墨绿 正文 */
+    --ink-soft:#5A6A55;  /* 次级文字 */
+    --card:#FDFAF3;      /* 卡片 */
+    --radius:22px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(107,143,113,.16), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(232,121,90,.14), transparent 55%),
+      var(--sand);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px 16px;
+    line-height:1.6;
+  }
+  .app{
+    width:100%;
+    max-width:460px;
+    background:var(--card);
+    border:1px solid rgba(45,74,62,.08);
+    border-radius:28px;
+    box-shadow:0 20px 50px rgba(45,74,62,.10), 0 2px 8px rgba(45,74,62,.05);
+    padding:34px 26px 30px;
+    position:relative;
+    overflow:hidden;
+  }
+  .app::before{
+    content:"";
+    position:absolute;top:0;left:0;right:0;height:5px;
+    background:linear-gradient(90deg,var(--coral),var(--moss) 55%,var(--pine));
+    opacity:.85;
+  }
+  section{animation:fadeIn .35s ease}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  [hidden]{display:none !important}
+
+  /* ===== 封面 ===== */
+  .cover{text-align:center;padding-top:10px}
+  .cover .mark{
+    width:118px;height:118px;margin:6px auto 22px;border-radius:50%;
+    background:linear-gradient(145deg,#8FB08F,var(--moss));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 12px 26px rgba(107,143,113,.32);
+  }
+  .cover .mark svg{width:58px;height:58px}
+  .cover h1{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:34px;font-weight:700;letter-spacing:2px;color:var(--pine);
+  }
+  .cover .sub{
+    margin-top:10px;color:var(--ink-soft);font-size:15px;letter-spacing:1px;
+  }
+  .cover .meta{
+    margin:26px auto 0;display:inline-flex;gap:14px;
+    background:var(--sand);border-radius:999px;padding:9px 18px;
+    font-size:13px;color:var(--ink-soft);
+  }
+  .meta span{display:inline-flex;align-items:center;gap:5px}
+  .btn{
+    display:block;width:100%;border:none;cursor:pointer;
+    font-size:17px;font-weight:600;letter-spacing:2px;
+    padding:15px 0;border-radius:999px;transition:transform .15s,box-shadow .15s;
+  }
+  .btn-primary{background:var(--pine);color:#FDFAF3;box-shadow:0 10px 22px rgba(45,74,62,.25)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(45,74,62,.32)}
+  .btn-primary:active{transform:translateY(0)}
+  .btn-ghost{
+    background:transparent;color:var(--ink-soft);border:1px solid var(--sand-deep);
+    font-size:15px;letter-spacing:1px;margin-top:14px;
+  }
+  .cover .start{margin-top:34px}
+  .cover .note{margin-top:16px;font-size:12px;color:var(--ink-soft);opacity:.8}
+
+  /* ===== 答题 ===== */
+  .quiz-head{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+  .q-count{font-size:13px;color:var(--ink-soft);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .q-count b{color:var(--coral);font-size:16px}
+  .bar{flex:1;height:8px;background:var(--sand-deep);border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--coral),var(--coral));transition:width .35s ease}
+  .quiz h2{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:23px;font-weight:700;line-height:1.5;color:var(--pine);
+    margin-bottom:24px;min-height:66px;
+  }
+  .opts{display:flex;flex-direction:column;gap:12px}
+  .opt{
+    text-align:left;width:100%;border:1.5px solid var(--sand-deep);background:#fff;
+    border-radius:16px;padding:14px 18px;font-size:15.5px;color:var(--ink);
+    cursor:pointer;transition:border-color .15s,background .15s,transform .1s;
+    font-family:inherit;line-height:1.5;
+  }
+  .opt:hover{border-color:var(--moss);transform:translateX(2px)}
+  .opt:active{transform:scale(.985)}
+  .opt.sel{border-color:var(--coral);background:#FDF1EC;font-weight:600;color:#B5523A}
+  .quiz .next{margin-top:26px}
+
+  /* ===== 结果 ===== */
+  .result{text-align:center;padding-top:8px}
+  .result .label{
+    display:inline-block;font-size:13px;letter-spacing:3px;color:var(--ink-soft);
+    background:var(--sand);border-radius:999px;padding:7px 18px;margin-bottom:20px;
+  }
+  .result .pic{
+    width:190px;height:190px;border-radius:50%;object-fit:cover;
+    border:5px solid #fff;box-shadow:0 14px 34px rgba(45,74,62,.22);
+    margin:4px auto 20px;display:block;opacity:1;
+    animation:pop .45s .08s both;
+  }
+  @keyframes pop{from{transform:scale(.88)}to{transform:none}}
+  .result .def{
+    display:inline-block;font-size:15px;letter-spacing:2px;font-weight:600;
+    color:#B5523A;background:#FDF1EC;border-radius:999px;padding:6px 18px;margin-bottom:14px;
+  }
+  .result h2{
+    font-family:"Songti SC","Noto Serif SC","STSong",serif;
+    font-size:30px;color:var(--pine);letter-spacing:4px;margin-bottom:14px;
+  }
+  .tags{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+  .tags span{
+    font-size:13px;color:var(--pine);background:#EDF2EA;border:1px solid #D8E4D3;
+    border-radius:999px;padding:5px 14px;letter-spacing:1px;
+  }
+  .result .desc{
+    font-size:15px;color:var(--ink);line-height:1.9;text-align:left;
+    background:var(--sand);border-radius:18px;padding:18px 20px;margin-bottom:16px;
+  }
+  .result .quote{
+    font-size:14px;color:var(--coral);font-style:normal;font-weight:600;
+    background:#FDF1EC;border-radius:14px;padding:13px 16px;margin-bottom:24px;line-height:1.7;
+  }
+  .result .share{
+    font-size:12.5px;color:var(--ink-soft);margin-top:14px;letter-spacing:1px;
+  }
+  .result .share b{color:var(--moss);font-weight:600}
+
+  @media (max-width:380px){
+    .app{padding:28px 18px 24px}
+    .cover h1{font-size:29px}
+    .quiz h2{font-size:20px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none !important;transition:none !important}
+  }
+</style>
+</head>
+<body>
+<main class="app">
+
+  <!-- ===== 视图：封面 ===== -->
+  <section id="view-cover" class="cover">
+    <div class="mark" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none">
+        <path d="M20 40c0-9 5-16 12-16s12 7 12 16c0 5-3 8-6 8H26c-3 0-6-3-6-8z" fill="#F5EFE4"/>
+        <path d="M28 22h8v6h-8z" fill="#F5EFE4"/>
+        <path d="M30 24c0-3 2-5 2-5s2 2 2 5" stroke="#E8795A" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h1>你看世界靠细节<br>还是靠感觉？</h1>
+    <p class="sub">8 个问题，测出你的信息偏好</p>
+    <div class="meta">
+      <span>约 2 分钟</span>
+      <span>·</span>
+      <span>6 种信息偏好</span>
+    </div>
+    <button class="btn btn-primary start" id="btn-start">开始测试</button>
+    <p class="note">结果仅供娱乐，看见什么，就是什么</p>
+  </section>
+
+  <!-- ===== 视图：答题 ===== -->
+  <section id="view-quiz" class="quiz" hidden>
+    <div class="quiz-head">
+      <span class="q-count"><b id="q-cur">1</b> / <span id="q-total">8</span></span>
+      <div class="bar"><i id="q-bar"></i></div>
+    </div>
+    <h2 id="q-text"></h2>
+    <div class="opts" id="q-opts"></div>
+    <button class="btn btn-primary next" id="btn-next" hidden>下一题</button>
+  </section>
+
+  <!-- ===== 视图：结果 ===== -->
+  <section id="view-result" class="result" hidden>
+    <span class="label">你的信息偏好是</span>
+    <img class="pic" data-a="wolf" src="assets/animal-wolf.jpg" alt="狼人格形象" hidden>
+    <img class="pic" data-a="fox" src="assets/animal-fox.jpg" alt="狐狸人格形象" hidden>
+    <img class="pic" data-a="cat" src="assets/animal-cat.jpg" alt="猫人格形象" hidden>
+    <img class="pic" data-a="deer" src="assets/animal-deer.jpg" alt="鹿人格形象" hidden>
+    <img class="pic" data-a="lion" src="assets/animal-lion.jpg" alt="狮子人格形象" hidden>
+    <img class="pic" data-a="dolphin" src="assets/animal-dolphin.jpg" alt="海豚人格形象" hidden>
+    <span class="def" id="r-def"></span>
+    <h2 id="r-name"></h2>
+    <div class="tags" id="r-tags"></div>
+    <p class="desc" id="r-desc"></p>
+    <p class="quote" id="r-quote"></p>
+    <button class="btn btn-primary" id="btn-retry">再测一次</button>
+    <p class="share">截图你的信息偏好，看看你是哪种看世界的人？<br><b>长按图片可保存</b></p>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+  /* ===== 题目数据：8 题 × 4 选项，选项映射信息偏好 ===== */
+  var QUESTIONS = [
+    { q:"新到一个地方，你会先注意？", opts:[
+      { t:"环境的细节（摆设、灯光、小物件）",   a:"wolf" },
+      { t:"整体氛围给人的感觉",                a:"cat"  },
+      { t:"这里有什么值得记录的",              a:"deer" },
+      { t:"这里可能藏着什么好玩的故事",        a:"dolphin" }
+    ]},
+    { q:"看一部电影，你更在意？", opts:[
+      { t:"剧情逻辑和细节伏笔",   a:"wolf" },
+      { t:"画面和配乐营造的氛围", a:"cat"  },
+      { t:"背后的隐喻和深意",     a:"fox"  },
+      { t:"主角的成长弧线和格局", a:"lion" }
+    ]},
+    { q:"回忆一段旅行，你最先想起？", opts:[
+      { t:"具体的画面（那天的光、那家小店）", a:"deer" },
+      { t:"当时的感受和心情",                 a:"cat"  },
+      { t:"途中那些巧合和奇遇",               a:"fox"  },
+      { t:"整趟的路线和结构安排",             a:"lion" }
+    ]},
+    { q:"朋友跟你讲一件事，你？", opts:[
+      { t:"抓住事实，追问细节",   a:"wolf" },
+      { t:"先感受到对方的情绪",   a:"cat"  },
+      { t:"马上联想类似的例子",   a:"fox"  },
+      { t:"记住重点，之后自己梳理", a:"lion" }
+    ]},
+    { q:"做笔记时，你通常？", opts:[
+      { t:"详细记，连日期天气都写上", a:"deer" },
+      { t:"记感受和灵感，不记流水账", a:"cat"  },
+      { t:"想到什么记什么，随手涂鸦", a:"dolphin" },
+      { t:"只记要点和大方向",         a:"lion" }
+    ]},
+    { q:"遇到新事物，你第一反应？", opts:[
+      { t:"先搞清它实际怎么用",   a:"wolf" },
+      { t:"感受它带给我的感觉",   a:"cat"  },
+      { t:"想它还能怎么玩出花样", a:"dolphin" },
+      { t:"想它在更大局面里什么位置", a:"lion" }
+    ]},
+    { q:"你更擅长？", opts:[
+      { t:"记住具体细节和数字", a:"deer" },
+      { t:"察觉没说出口的情绪", a:"cat"  },
+      { t:"发现事物之间的隐藏联系", a:"fox"  },
+      { t:"快速抓住事情本质",     a:"lion" }
+    ]},
+    { q:"看一张照片，你首先？", opts:[
+      { t:"看画面细节（表情、背景、物件）", a:"wolf" },
+      { t:"感受照片的情绪",                 a:"cat"  },
+      { t:"想象照片背后的故事",             a:"dolphin" },
+      { t:"看构图和整体感觉",               a:"lion" }
+    ]}
+  ];
+
+  /* ===== 信息偏好人格数据 ===== */
+  var ANIMALS = {
+    wolf: {
+      name:"狼", def:"细节侦探", tags:["火眼金睛","细节控","记性好"],
+      desc:"你是「细节侦探」。你看世界靠细节：别人忽略的小物件、小变化、小表情，都逃不过你的眼睛。你的记忆里存着很多具体画面，说起一件事时，你能还原当时的每一个细节。",
+      quote:"细节里，藏着你看世界的显微镜。"
+    },
+    fox: {
+      name:"狐狸", def:"联想智多星", tags:["联想丰富","触类旁通","洞察力强"],
+      desc:"你是「联想智多星」。你看世界靠联想：一件事总能让你想到别的事，看似无关的东西在你眼里都有联系。你善于发现隐藏的规律和背后的深意，常常一语惊醒梦中人。",
+      quote:"你看世界，像看一张藏宝图。"
+    },
+    cat: {
+      name:"猫", def:"氛围感应者", tags:["第六感","察言观色","感知力强"],
+      desc:"你是「氛围感应者」。你看世界靠感觉：一句话还没说完，你已经感受到对方的情绪；走进一个房间，你立刻知道气氛对不对。你的第六感很准，很多事不用解释，你心里已经明白。",
+      quote:"有些事不用看，你感受得到。"
+    },
+    deer: {
+      name:"鹿", def:"温柔记录者", tags:["生活观察家","回忆细腻","用心记住"],
+      desc:"你是「温柔记录者」。你看世界靠记录：美好的瞬间你会用心记下来，具体到那天的光、那家店、那个人说了什么。你的回忆是彩色的，因为你把生活过得很有细节。",
+      quote:"你记得的每一帧，都是生活的礼物。"
+    },
+    lion: {
+      name:"狮子", def:"大局掌控者", tags:["看全局","抓大放小","方向感强"],
+      desc:"你是「大局掌控者」。你看世界靠全局：不会被细节绊住，一眼看到事情的大方向和结构。你能快速判断一件事值不值得做，也能在复杂局面里找到主线。",
+      quote:"你眼里的世界，有清晰的地图。"
+    },
+    dolphin: {
+      name:"海豚", def:"灵感玩家", tags:["脑洞大","点子多","天马行空"],
+      desc:"你是「灵感玩家」。你看世界靠灵感：一件普通的东西在你眼里能玩出一百种花样。你点子多、脑洞大，常常冒出别人想不到的好玩想法。和你在一起，永远不缺新鲜感。",
+      quote:"你的脑洞里，装着一整个宇宙。"
+    }
+  };
+
+  /* ===== 视图切换 ===== */
+  var $ = function(id){ return document.getElementById(id); };
+  var views = { cover:$("view-cover"), quiz:$("view-quiz"), result:$("view-result") };
+  function show(v){
+    Object.keys(views).forEach(function(k){ views[k].hidden = (k !== v); });
+  }
+
+  /* ===== 答题逻辑 ===== */
+  var cur = 0, scores = {}, selected = null;
+  function reset(){
+    cur = 0; selected = null; scores = {};
+    ["wolf","fox","cat","deer","lion","dolphin"].forEach(function(a){ scores[a] = 0; });
+  }
+  function renderQuestion(){
+    var item = QUESTIONS[cur];
+    $("q-cur").textContent = cur + 1;
+    $("q-total").textContent = QUESTIONS.length;
+    $("q-bar").style.width = (cur / QUESTIONS.length * 100) + "%";
+    $("q-text").textContent = item.q;
+    var box = $("q-opts");
+    box.innerHTML = "";
+    selected = null;
+    $("btn-next").hidden = true;
+    item.opts.forEach(function(o, i){
+      var b = document.createElement("button");
+      b.className = "opt";
+      b.textContent = o.t;
+      b.addEventListener("click", function(){
+        scores[o.a] += 1;
+        selected = o.a;
+        var all = box.children;
+        for (var j = 0; j < all.length; j++){ all[j].classList.remove("sel"); }
+        b.classList.add("sel");
+        $("btn-next").hidden = false;
+      });
+      box.appendChild(b);
+    });
+  }
+  function next(){
+    if (selected === null) return;
+    cur += 1;
+    if (cur < QUESTIONS.length){
+      renderQuestion();
+    } else {
+      var win = "wolf", best = -1;
+      Object.keys(scores).forEach(function(a){
+        if (scores[a] > best){ best = scores[a]; win = a; }
+      });
+      showResult(win);
+    }
+  }
+  function showResult(animalId){
+    var a = ANIMALS[animalId];
+    var pics = document.querySelectorAll(".result .pic");
+    for (var p = 0; p < pics.length; p++){
+      pics[p].hidden = (pics[p].getAttribute("data-a") !== animalId);
+    }
+    $("r-def").textContent = a.def;
+    $("r-name").textContent = a.name;
+    var tags = $("r-tags");
+    tags.innerHTML = "";
+    a.tags.forEach(function(t){
+      var s = document.createElement("span");
+      s.textContent = t;
+      tags.appendChild(s);
+    });
+    $("r-desc").textContent = a.desc;
+    $("r-quote").textContent = "「 " + a.quote + " 」";
+    show("result");
+  }
+
+  /* ===== 事件绑定（无僵尸按钮） ===== */
+  $("btn-start").addEventListener("click", function(){
+    reset();
+    renderQuestion();
+    show("quiz");
+  });
+  $("btn-next").addEventListener("click", next);
+  $("btn-retry").addEventListener("click", function(){
+    reset();
+    renderQuestion();
+    show("quiz");
+  });
+})();
+</script>
+</body>
+</html>
